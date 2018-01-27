@@ -247,6 +247,7 @@
     <Content Include="Views\Task\EditTask.cshtml" />
     <Content Include="Views\Task\ShowOverdue.cshtml" />
     <Content Include="Views\Task\ShowCompleted.cshtml" />
+    <Content Include="Views\Task\ListErrors.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

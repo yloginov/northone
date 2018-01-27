@@ -26,19 +26,40 @@ namespace NorthOneChallenge.Controllers
         public ActionResult ShowUpcoming()
         {
             var tasks = _service.GetUpcomingTasks();
-            return View(tasks);            
+            if(tasks.Item2.Count == 0)
+            {
+                return View(tasks);
+            }
+            else
+            {
+                return View("ListErrors", tasks.Item2);
+            }                        
         }
 
         public ActionResult ShowOverdue()
         {
             var tasks = _service.GetOverdueTasks();
-            return View(tasks);
+            if(tasks.Item2.Count == 0)
+            {
+                return View(tasks);
+            }
+            else
+            {
+                return View("ListErrors", tasks.Item2);
+            }
         }
 
         public ActionResult ShowCompleted()
         {
             var tasks = _service.GetTasksByStatus(Task.TaskStatus.DONE);
-            return View(tasks);
+            if (tasks.Item2.Count == 0)
+            {
+                return View(tasks);
+            }
+            else
+            {
+                return View("ListErrors", tasks.Item2);
+            }
         }
 
         [HttpGet]
@@ -58,9 +79,17 @@ namespace NorthOneChallenge.Controllers
             if (TryUpdateModel(model))
             {
                 var result = _service.Create(new Task[] { model });
-            } 
+                if (result.Item2.Count == 0)
+                {
+                    RedirectToAction("ShowUpcoming");
+                }
+                else
+                {
+                    return View("ListErrors", result.Item2);
+                }
+            }
 
-            return RedirectToAction("ShowUpcoming");
+            return View("ListErrors", GetModelErrors());
         }
 
         [HttpGet]
@@ -71,8 +100,10 @@ namespace NorthOneChallenge.Controllers
             {
                 return View(result.Item1[0]);
             }
-
-            return View();
+            else
+            {
+                return View("ListErrors", result.Item2);
+            }
         }
 
         [HttpPost]
@@ -85,17 +116,43 @@ namespace NorthOneChallenge.Controllers
                 if (result.Item2.Count == 0)
                 {
                     result = _service.Update(new Task[] { model });
-                }                
-            }
+                    if(result.Item2.Count == 0)
+                    {
+                        return RedirectToAction("ShowUpcoming");
+                    }
+                }
 
-            return RedirectToAction("ShowUpcoming");
+                return View("ListErrors", result.Item2);
+            }            
+
+            return View("ListErrors", GetModelErrors());
         }
 
         [HttpGet]
         public ActionResult DeleteTask(int Id)
         {
             var result = _service.Delete(new int[] { Id });
-            return RedirectToAction("ShowUpcoming");
+            if(result.Count == 0)
+            {
+                return RedirectToAction("ShowUpcoming");
+            }
+            else
+            {
+                return View("ListErrors", result);
+            }            
+        }
+
+        private List<string> GetModelErrors()
+        {
+            List<string> errors = new List<string>();
+            foreach (ModelState modelState in ViewData.ModelState.Values)
+            {
+                foreach (ModelError error in modelState.Errors)
+                {
+                    errors.Add(error.ErrorMessage);
+                }
+            }
+            return errors;
         }
     }
 }
