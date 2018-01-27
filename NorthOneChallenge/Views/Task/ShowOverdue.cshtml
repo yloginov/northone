@@ -1,0 +1,53 @@
+﻿@using NorthOneChallenge.Models;
+@model Tuple<List<Task>, List<string>>
+
+@{
+    ViewBag.Title = "ShowUpcoming";
+}
+
+@Html.ActionLink("Create Task", "CreateTask")
+
+<div style="margin:10px"></div>
+
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a class="nav-link" href="ShowUpcoming">Upcoming</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link active" href="#">Overdue</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="ShowCompleted">Completed</a>
+    </li>
+</ul>
+
+<div style="margin:5px"></div>
+
+@foreach (Task task in Model.Item1)
+{
+    <div style="border:1px solid black; padding:10px">
+        <div>
+            <span><b>@task.Title</b></span>
+        </div>
+        <div>
+            <label>Due date: </label>
+            <span>@task.DueDate.ToString("yyy-mm-dd hh:mm")</span>
+        </div>
+        <div>
+            <label>Status: </label>
+            <span>@task.Status</span>
+        </div>
+        <div>
+            <label>Description: </label>
+            <span>@task.Description</span>
+        </div>
+
+        <div>
+            @Html.ActionLink("Edit Task", "EditTask", new { id = task.Id })   |
+            @Html.ActionLink("Delete Task", "DeleteTask", new { id = task.Id })
+        </div>
+    </div>
+
+    <div style="margin:5px"></div>
+}
+
