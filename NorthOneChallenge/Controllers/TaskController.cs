@@ -81,7 +81,7 @@ namespace NorthOneChallenge.Controllers
                 var result = _service.Create(new Task[] { model });
                 if (result.Item2.Count == 0)
                 {
-                    RedirectToAction("ShowUpcoming");
+                    return RedirectToAction("ShowUpcoming");
                 }
                 else
                 {
